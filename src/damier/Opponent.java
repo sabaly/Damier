@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author user
+ * @author TMS
  */
 public class Opponent {
     protected ArrayList pawns;

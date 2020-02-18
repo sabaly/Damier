@@ -7,7 +7,7 @@ package damier;
 
 /**
  *
- * @author user
+ * @author TMS
  */
 public class Position {
     protected int line;
