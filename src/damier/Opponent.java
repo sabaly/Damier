@@ -21,6 +21,4 @@ public class Opponent {
     public ArrayList getPawns() {
         return pawns;
     }
-    
-    
 }

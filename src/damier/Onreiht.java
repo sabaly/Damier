@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author user
+ * @author TMS
  */
 public class Onreiht {
     protected ArrayList<Pawn> my_pawns;

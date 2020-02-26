@@ -1,5 +1,9 @@
 package damier;
 
+/**
+ *
+ * @author TMS
+ */
 import java.util.ArrayList;
 
 public class Hut {

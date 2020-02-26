@@ -37,21 +37,23 @@ public class main {
                 break;
         }
         Position p1=new Position(3,'D');
-        Position p2=new Position(5,'D');
-        Position p3=new Position(3,'B');
+        Position p2=new Position(3,'F');
+        Position p3=new Position(6,'A');
+        Position p4=new Position(3,'B');
         for(int i=0; i<opponent_pawns.size(); i++){
             if(opponent_pawns.get(i).getPosition().getLine()==5 && opponent_pawns.get(i).getPosition().getColumn()=='D')
                 opponent_pawns.get(i).move(new Hut(p1));
             if(opponent_pawns.get(i).getPosition().getLine()==6 && opponent_pawns.get(i).getPosition().getColumn()=='C')
                 opponent_pawns.get(i).move(new Hut(p2));
             if(opponent_pawns.get(i).getPosition().getLine()==6 && opponent_pawns.get(i).getPosition().getColumn()=='A')
-                opponent_pawns.get(i).move(new Hut(p3));
+                opponent_pawns.get(i).move(new Hut(p4));
             
-//            opponent_pawns.get(i).showPawn();
+            opponent_pawns.get(i).showPawn();
         }
         System.out.println("--------------------\n");
+        ArrayList<Hut> hutprev =new ArrayList<Hut>();
         for(int i=0; i<my_pawns.size(); i++){
-            System.out.println(my_pawns.get(i).eatNumberPawn(my_pawns, opponent_pawns, huts));
+            System.out.println(my_pawns.get(i).eatNumberPawn(my_pawns, opponent_pawns, huts,hutprev));
 //            System.out.println(my_pawns.get(i).jumpPawn(my_pawns, opponent_pawns, huts).getColumn() + ""
 //                    + "" + my_pawns.get(i).jumpPawn(my_pawns, opponent_pawns, huts).getLine());
         }

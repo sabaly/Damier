@@ -14,10 +14,13 @@ import java.util.ArrayList;
 public class Pawn {
     protected Position position;
     private boolean king = false;
+    private int indice;
+    protected Position NextPos;
 
     public Pawn(Position position) {
         this.position = position;
         this.king = isKing();
+        this.indice = 0;
     }
 
     public Position getPosition() {
@@ -31,10 +34,18 @@ public class Pawn {
     public void setKing(boolean king) {
         this.king = king;
     }
+
+    public int getIndice() {
+        return indice;
+    }
+
+    public void setIndice(int indice) {
+        this.indice = indice;
+    }
     
-   
-    
-    
+    /*
+        This function change moves a pawn by changing his hut
+    */
     public boolean move(Hut hut){
         if(hut.isActivated()){
             System.out.println("Déplacer de " + this.position.getColumn() + "" + this.position.getLine() + ""
@@ -45,40 +56,37 @@ public class Pawn {
         return false;
     }
     
-    public boolean eat(Pawn pawn){
-        
-        return true;
-    }
-    
-    public boolean canEat(ArrayList<Pawn> my_pawn, ArrayList<Pawn> opponent_pawn, int line_number, int indice){
-        if(indice==0)
-            indice++;
+    //The following function check if a pawn can catch or eat an opponent opponent pawn
+    public boolean canEat(ArrayList<Pawn> my_pawn, ArrayList<Pawn> opponent_pawn, int line_number){
+        if(this.getIndice()==0)
+            this.setIndice(1);
         
         if(this.isKing()){
             //nothing yet
         }else{
             //Check if there is a possible catch moving towards right
-            if(this.canEatTowardsRight(my_pawn, opponent_pawn, line_number) && indice == 1)
+            if(this.canEatTowardsRight(my_pawn, opponent_pawn, line_number) && this.getIndice() == 1)
                 return true;
             else
-                indice++;
+                this.setIndice(2);
             
             //Check if there is a possible catch moving towards left
-            if(this.canEatTowardsLeft(my_pawn, opponent_pawn, line_number) && indice == 2)
+            if(this.canEatTowardsLeft(my_pawn, opponent_pawn, line_number) && this.getIndice() == 2)
                 return true;
             else
-                indice++;
-            
+                this.setIndice(3);
             
             //Check if there is a possible catch moving behind right
-            if(this.canEatBehindRight(my_pawn, opponent_pawn, line_number) && indice == 3)
+            if(this.canEatBehindRight(my_pawn, opponent_pawn, line_number) && this.getIndice() == 3)
                 return true;
             else
-                indice++;
+                this.setIndice(4);
             
             //Check if there is a possible catch moving behind left
-            if(this.canEatBehindLeft(my_pawn, opponent_pawn, line_number) && indice == 4)
+            if(this.canEatBehindLeft(my_pawn, opponent_pawn, line_number) && this.getIndice() == 4)
                 return true;
+            else
+                this.setIndice(0);
             
             
         }
@@ -87,6 +95,8 @@ public class Pawn {
     
     public boolean canEatTowardsRight(ArrayList<Pawn> my_pawn, ArrayList<Pawn> opponent_pawn, int line_number){
         Hut hut = new Hut(new Position(this.getPosition().nextLine(line_number), this.getPosition().nextColumn(line_number)));
+        if(this.getIndice() != 1 && this.getIndice() != 0)
+            return false;
         if(hut.busyByOpponentPawn(opponent_pawn)){
             hut.setPosition(new Position(hut.getPosition().nextLine(line_number), hut.getPosition().nextColumn(line_number)));
             if(hut.isAvailable(my_pawn, opponent_pawn)){
@@ -97,6 +107,8 @@ public class Pawn {
     }
     public boolean canEatTowardsLeft(ArrayList<Pawn> my_pawn, ArrayList<Pawn> opponent_pawn, int line_number){
         Hut hut = new Hut(new Position(this.getPosition().nextLine(line_number), this.getPosition().previewColumn()));
+        if(this.getIndice() != 2 && this.getIndice() != 0)
+            return false;
         if(hut.busyByOpponentPawn(opponent_pawn)){
             hut.setPosition(new Position(hut.getPosition().nextLine(line_number), hut.getPosition().previewColumn()));
             if(hut.isAvailable(my_pawn, opponent_pawn)){
@@ -107,6 +119,8 @@ public class Pawn {
     }
     public boolean canEatBehindRight(ArrayList<Pawn> my_pawn, ArrayList<Pawn> opponent_pawn, int line_number){
         Hut hut = new Hut(new Position(this.getPosition().previewLine(), this.getPosition().nextColumn(line_number)));
+        if(this.getIndice() != 3 && this.getIndice() != 0)
+            return false;
         if(hut.busyByOpponentPawn(opponent_pawn)){
             hut.setPosition(new Position(hut.getPosition().previewLine(), hut.getPosition().nextColumn(line_number)));
             if(hut.isAvailable(my_pawn, opponent_pawn)){
@@ -117,6 +131,8 @@ public class Pawn {
     }
     public boolean canEatBehindLeft(ArrayList<Pawn> my_pawn, ArrayList<Pawn> opponent_pawn, int line_number){
         Hut hut = new Hut(new Position(this.getPosition().previewLine(), this.getPosition().previewColumn()));
+        if(this.getIndice() != 4 && this.getIndice() != 0)
+            return false;
         if(hut.busyByOpponentPawn(opponent_pawn)){
             hut.setPosition(new Position(hut.getPosition().previewLine(), hut.getPosition().previewColumn()));
             if(hut.isAvailable(my_pawn, opponent_pawn)){
@@ -126,58 +142,106 @@ public class Pawn {
         return false;
     }
     
-    public Position jumpPawn(ArrayList<Pawn> my_pawn, ArrayList<Pawn> opponent_pawn, int line_number, int indice){
-        if(indice == 0)
-            indice++;
-        if(this.canEatTowardsRight(my_pawn, opponent_pawn, line_number) && indice==1){
+    /*
+        return the next possible hut of the pawn if it can eat an opponent pawn
+    */
+    public Position jumpPawn(ArrayList<Pawn> my_pawn, ArrayList<Pawn> opponent_pawn, int line_number){
+        if(this.getIndice() == 0)
+            this.setIndice(1);
+        if(this.canEatTowardsRight(my_pawn, opponent_pawn, line_number) && this.getIndice()==1){
             Hut hut = new Hut(new Position(this.getPosition().nextLine(line_number), this.getPosition().nextColumn(line_number)));
             return new Position(hut.getPosition().nextLine(line_number), hut.getPosition().nextColumn(line_number));
-        }else
-            indice++;
-        
-        if(this.canEatTowardsLeft(my_pawn, opponent_pawn, line_number) && indice==2){
-            Hut hut = new Hut(new Position(this.getPosition().nextLine(line_number), this.getPosition().previewColumn()));
-            return new Position(hut.getPosition().nextLine(line_number), hut.getPosition().previewColumn());
-        }else
-            indice++;
-        
-        if(this.canEatBehindRight(my_pawn, opponent_pawn, line_number) && indice==3){
-            Hut hut = new Hut(new Position(this.getPosition().previewLine(), this.getPosition().nextColumn(line_number)));
-               return new Position(hut.getPosition().previewLine(), hut.getPosition().nextColumn(line_number));
-        }else
-            indice++;
-        
-        if(this.canEatBehindLeft(my_pawn, opponent_pawn, line_number) && indice==4){
-            Hut hut = new Hut(new Position(this.getPosition().previewLine(), this.getPosition().previewColumn()));
-            return new Position(hut.getPosition().previewLine(), hut.getPosition().previewColumn());
         }
         
+        if(this.canEatTowardsLeft(my_pawn, opponent_pawn, line_number) && this.getIndice()==2){
+            Hut hut = new Hut(new Position(this.getPosition().nextLine(line_number), this.getPosition().previewColumn()));
+            return new Position(hut.getPosition().nextLine(line_number), hut.getPosition().previewColumn());
+        }
+        
+        if(this.canEatBehindRight(my_pawn, opponent_pawn, line_number) && this.getIndice()==3){
+            Hut hut = new Hut(new Position(this.getPosition().previewLine(), this.getPosition().nextColumn(line_number)));
+               return new Position(hut.getPosition().previewLine(), hut.getPosition().nextColumn(line_number));
+        }
+//        }else if(this.getIndice() != 4)
+//            this.setIndice(4);
+        
+        if(this.canEatBehindLeft(my_pawn, opponent_pawn, line_number) && this.getIndice()==4){
+            Hut hut = new Hut(new Position(this.getPosition().previewLine(), this.getPosition().previewColumn()));
+            return new Position(hut.getPosition().previewLine(), hut.getPosition().previewColumn());
+        }//else
+//            this.setIndice(0);
+//        
         {
             return this.getPosition();
         }
     }
     
-    
-    public int eatNumberPawn(ArrayList<Pawn> my_pawn, ArrayList<Pawn> opponent_pawn, int line_number){
-        ArrayList<Hut> previewHuts = new ArrayList<Hut>();
-        int numberofcatches = 0;
-        Pawn p=new Pawn(this.getPosition());
-        while(p.canEat(my_pawn, opponent_pawn, line_number, 0)){
-            boolean caneatotherway = false;
-            int indice = 0;
-            if(containsHut(previewHuts, new Hut(p.jumpPawn(my_pawn, opponent_pawn, line_number, 0))))
-            {
-                break;
+    public static ArrayList<Integer> order(ArrayList<Integer> liste){
+        for(int i=0; i<liste.size(); i++){
+            if(liste.get(i) > liste.get(0)){
+                int t=liste.get(i);
+                liste.set(0, liste.get(i));
+                liste.set(i,t);
             }
-            
-            previewHuts.add(new Hut(p.getPosition()));
-            numberofcatches++;
-            p.setPosition(p.jumpPawn(my_pawn, opponent_pawn, line_number, indice));
         }
+        return liste;
+    }
+    
+    /*
+        It comes that a pawn has the possibility to eat more than one opponent pawn.
+        The following function gives the number of opponent pawns it can eat by moving 
+        towards-Right, towards-Left, behind-Right or behind-Left.
+        
+    */
+    public int eatNumberPawn(ArrayList<Pawn> my_pawn, ArrayList<Pawn> opponent_pawn, int line_number,
+            ArrayList<Hut> previewHuts){
+        if(!this.canEat(my_pawn, opponent_pawn, line_number))
+            return 0;
+        int numberofcatches = 1;
+        Pawn p=new Pawn(this.getPosition());
+        ArrayList<Integer> possibilities = p.CatchPossibilities(my_pawn, opponent_pawn, line_number);        
+        ArrayList<Integer> catches=new ArrayList<Integer>();
+            if(possibilities.size()>1){
+                for(int i=0; i< possibilities.size(); i++){
+                    p.setIndice(possibilities.get(i));
+                    Pawn np=new Pawn(p.jumpPawn(my_pawn, opponent_pawn, line_number));
+                    if(!containsHut(previewHuts, new Hut(np.jumpPawn(my_pawn, opponent_pawn, line_number))))
+                        catches.add(np.eatNumberPawn(my_pawn, opponent_pawn, line_number,previewHuts)+1);
+                    previewHuts.add(new Hut(p.getPosition()));
+                }
+                catches = order(catches);
+                if(!catches.isEmpty())
+                    numberofcatches = catches.get(0);
+            }else if(possibilities.size()==1){
+                p.setIndice(possibilities.get(0));previewHuts.add(new Hut(p.getPosition()));
+                Pawn np=new Pawn(p.jumpPawn(my_pawn, opponent_pawn, line_number));
+                ArrayList<Integer> indexes = np.CatchPossibilities(my_pawn, opponent_pawn, line_number);
+                for(int k=0; k<indexes.size(); k++){
+                    np.setIndice(indexes.get(k));
+                    if(!containsHut(previewHuts, new Hut(np.jumpPawn(my_pawn, opponent_pawn, line_number)))){
+                        numberofcatches = np.eatNumberPawn(my_pawn, opponent_pawn, line_number, previewHuts)+1;                        
+                    }
+                }
+                
+                
+            }
         
         return numberofcatches;
     }
     
+    
+    public ArrayList<Integer> CatchPossibilities(ArrayList<Pawn> my_pawn, ArrayList<Pawn> opponent_pawn, int line_number){
+        ArrayList<Integer> indices = new ArrayList<Integer>();
+        if(this.canEatTowardsRight(my_pawn, opponent_pawn, line_number))
+            indices.add(1);
+        if(this.canEatTowardsLeft(my_pawn, opponent_pawn, line_number))
+            indices.add(2);
+        if(this.canEatBehindRight(my_pawn, opponent_pawn, line_number))
+            indices.add(3);
+        if(this.canEatBehindLeft(my_pawn, opponent_pawn, line_number))
+                indices.add(4);
+        return indices;
+    }
     public boolean containsHut(ArrayList<Hut> huts, Hut hut){
         if(huts.size()==0)
             return false;
@@ -190,6 +254,7 @@ public class Pawn {
         
         return false;
     }
+    
     public boolean iseaten(){
         return false;
     }
@@ -222,13 +287,10 @@ public class Pawn {
         return huts;
     }
     
-    public boolean canMove(ArrayList<Hut> huts){
-//        char[] Alphabet = {'A', 'B', 'C', 'D', 'E', 'F'};
-        return false;
-    }
     
-    
-    
+    /*
+        Gives informations about the pawn. That information change if the pawn moves. 
+    */
     public void showPawn(){
         System.out.println(position.getColumn() + "" + position.getLine());
     }
