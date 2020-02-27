@@ -8,18 +8,43 @@ import java.util.ArrayList;
 
 public class Hut {
     protected Position position;
+    protected int case_number=10;
 
     public Hut(Position position) {
         this.position = position;
     }
+
+    public void setCase_number(int case_number) {
+        this.case_number = case_number;
+    }
+    
     
     public boolean isActivated(){
-        char[] Alphabet = {'A', 'B', 'C', 'D', 'E', 'F'};
+        char[] Alphabet=new char[case_number];
+        switch(case_number){
+            case 6:
+                char[] Alph6 = {'A', 'B', 'C', 'D', 'E', 'F'};
+                Alphabet=Alph6;
+                break;
+            case 8:
+                char[] Alph8 = {'A', 'B', 'C', 'D', 'E', 'F','G', 'H'};
+                Alphabet=Alph8;
+                break;
+            case 10:
+                char[] Alph10 = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
+                Alphabet=Alph10;
+                break;
+            default:
+                break;
+        }
+        for(int i=0; i<case_number; i++){
+            
+        }
         for(int j = 0; j<Alphabet.length; j++){
             if(Alphabet[j] == this.getPosition().getColumn()){
                 if((this.getPosition().getLine()+j+1)%2==0){
                     return false;
-                }
+                }          
             }
         }
         return true;

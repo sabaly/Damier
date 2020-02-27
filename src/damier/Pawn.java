@@ -192,46 +192,47 @@ public class Pawn {
         The following function gives the number of opponent pawns it can eat by moving 
         towards-Right, towards-Left, behind-Right or behind-Left.
         
-    */
+    */    
     public int eatNumberPawn(ArrayList<Pawn> my_pawn, ArrayList<Pawn> opponent_pawn, int line_number,
             ArrayList<Hut> previewHuts){
+        previewHuts.add(new Hut(this.getPosition()));
         if(!this.canEat(my_pawn, opponent_pawn, line_number))
             return 0;
         int numberofcatches = 1;
         Pawn p=new Pawn(this.getPosition());
-        ArrayList<Integer> possibilities = p.CatchPossibilities(my_pawn, opponent_pawn, line_number);        
-        ArrayList<Integer> catches=new ArrayList<Integer>();
-            if(possibilities.size()>1){
-                for(int i=0; i< possibilities.size(); i++){
-                    p.setIndice(possibilities.get(i));
-                    Pawn np=new Pawn(p.jumpPawn(my_pawn, opponent_pawn, line_number));
-                    if(!containsHut(previewHuts, new Hut(np.jumpPawn(my_pawn, opponent_pawn, line_number))))
-                        catches.add(np.eatNumberPawn(my_pawn, opponent_pawn, line_number,previewHuts)+1);
-                    previewHuts.add(new Hut(p.getPosition()));
-                }
-                catches = order(catches);
-                if(!catches.isEmpty())
-                    numberofcatches = catches.get(0);
-            }else if(possibilities.size()==1){
-                p.setIndice(possibilities.get(0));previewHuts.add(new Hut(p.getPosition()));
-                Pawn np=new Pawn(p.jumpPawn(my_pawn, opponent_pawn, line_number));
-                ArrayList<Integer> indexes = np.CatchPossibilities(my_pawn, opponent_pawn, line_number);
-                for(int k=0; k<indexes.size(); k++){
-                    np.setIndice(indexes.get(k));
-                    if(!containsHut(previewHuts, new Hut(np.jumpPawn(my_pawn, opponent_pawn, line_number)))){
-                        numberofcatches = np.eatNumberPawn(my_pawn, opponent_pawn, line_number, previewHuts)+1;                        
-                    }
-                }
-                
-                
+        ArrayList<Integer> possibilities = p.CatchPossibilities(my_pawn, opponent_pawn, line_number);
+        //System.out.println(">>>" + possibilities.size());
+        if(possibilities.size()==1){
+            p.setIndice(possibilities.get(0));
+            if(!containsHut(previewHuts, new Hut(p.jumpPawn(my_pawn, opponent_pawn, line_number)))){
+                Pawn np = new Pawn(p.jumpPawn(my_pawn, opponent_pawn, line_number));
+                //np.showPawn();
+                numberofcatches += np.eatNumberPawn(my_pawn, opponent_pawn, line_number, previewHuts);
+            }else{
+                return 0;
             }
+        }else{
+            ArrayList<Integer> catches = new ArrayList<>();
+            for(int i=0 ; i<possibilities.size(); i++){
+                p.setIndice(possibilities.get(i));
+                if(!containsHut(previewHuts, new Hut(p.jumpPawn(my_pawn, opponent_pawn, line_number)))){
+                    Pawn np = new Pawn(p.jumpPawn(my_pawn, opponent_pawn, line_number));
+                    catches.add(numberofcatches + np.eatNumberPawn(my_pawn, opponent_pawn, line_number, previewHuts));
+                }else{
+                    catches.add(0);
+                }
+            }
+            catches = order(catches);
+            if(!catches.isEmpty())
+                numberofcatches = catches.get(0);
+        }
         
         return numberofcatches;
     }
     
     
     public ArrayList<Integer> CatchPossibilities(ArrayList<Pawn> my_pawn, ArrayList<Pawn> opponent_pawn, int line_number){
-        ArrayList<Integer> indices = new ArrayList<Integer>();
+        ArrayList<Integer> indices = new ArrayList<>();
         if(this.canEatTowardsRight(my_pawn, opponent_pawn, line_number))
             indices.add(1);
         if(this.canEatTowardsLeft(my_pawn, opponent_pawn, line_number))
@@ -243,7 +244,7 @@ public class Pawn {
         return indices;
     }
     public boolean containsHut(ArrayList<Hut> huts, Hut hut){
-        if(huts.size()==0)
+        if(huts.isEmpty())
             return false;
         for(int i=0; i<huts.size(); i++){
             if(huts.get(i).getPosition().getLine() == hut.getPosition().getLine() &&
