@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Hut {
     protected Position position;
-    protected int case_number=10;
+    protected int case_number;
 
     public Hut(Position position) {
         this.position = position;

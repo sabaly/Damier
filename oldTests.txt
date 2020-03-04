@@ -1,0 +1,70 @@
+/*
+	Here you will fine the tests already done. Then you can test them too.
+*/
+
+-------------------------------------------------------------------------------
+				SHOW DIFFERENTS PAWNS
+-------------------------------------------------------------------------------
+
+===> Camputer pawns
+        for(int i=0; i<my_pawns.size(); i++){
+        	my_pawns.get(i).showPawn();
+        }
+
+===> opponent pawns
+        for(int i=0; i<opponent_pawns.size(); i++){
+        	opponent_pawns.get(i).showPawn();
+        }
+--------------------------------------------------------------------------------
+				Methode move()
+-------------------------------------------------------------------------------- 
+Position p1=new Position(3,'D');
+
+for(int i=0; i<opponent_pawns.size(); i++){
+    if(opponent_pawns.get(i).getPosition().getLine()==6 && opponent_pawns.get(i).getPosition().getColumn()=='C')
+    opponent_pawns.get(i).move(new Hut(p1));
+}
+------------------------------------------------------------------------------------
+				Methode eatumberPawn()
+------------------------------------------------------------------------------------
+===> Case 1 : checkboarder 6x6
+Position p1=new Position(3,'D');
+//We move the pawn C6 at D3
+for(int i=0; i<opponent_pawns.size(); i++){
+    if(opponent_pawns.get(i).getPosition().getLine()==6 && opponent_pawns.get(i).getPosition().getColumn()=='C')
+    opponent_pawns.get(i).move(new Hut(p1));
+}
+//We count the max of catches that each of the camputer pawn can have
+for(int i=0; i<my_pawns.size(); i++){
+            ArrayList<Hut> hutprev =new ArrayList<Hut>();
+            System.out.println(my_pawns.get(i).eatNumberPawn(my_pawns, opponent_pawns, huts,hutprev));
+}
+
+===> case 2 : checkboarder 10x10
+
+		Position p1=new Position(3,'D');
+        Position p2=new Position(4,'G');
+        Position p3=new Position(6,'A');
+        Position p4=new Position(5,'D');
+        Position p5=new Position(5,'H');
+        Position p6=new Position(5,'J');
+        for(int i=0; i<opponent_pawns.size(); i++){
+            if(opponent_pawns.get(i).getPosition().getLine()==6 && opponent_pawns.get(i).getPosition().getColumn()=='C')
+                opponent_pawns.get(i).move(new Hut(p1));
+            if(opponent_pawns.get(i).getPosition().getLine()==7 && opponent_pawns.get(i).getPosition().getColumn()=='H')
+                opponent_pawns.get(i).move(new Hut(p2));
+            if(opponent_pawns.get(i).getPosition().getLine()==8 && opponent_pawns.get(i).getPosition().getColumn()=='A')
+                opponent_pawns.get(i).move(new Hut(p3));
+            if(opponent_pawns.get(i).getPosition().getLine()==8 && opponent_pawns.get(i).getPosition().getColumn()=='C')
+                opponent_pawns.get(i).move(new Hut(p4));
+            if(opponent_pawns.get(i).getPosition().getLine()==8 && opponent_pawns.get(i).getPosition().getColumn()=='I')
+                opponent_pawns.get(i).move(new Hut(p5));
+            if(opponent_pawns.get(i).getPosition().getLine()==10 && opponent_pawns.get(i).getPosition().getColumn()=='G')
+                opponent_pawns.get(i).move(new Hut(p6));
+        }
+        System.out.println("--------------------\n");
+        for(int i=0; i<my_pawns.size(); i++){
+            ArrayList<Hut> hutprev =new ArrayList<Hut>();
+        }
+
+====> Create your own situation by moving the pawns as you want.
